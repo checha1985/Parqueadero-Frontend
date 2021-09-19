@@ -1,0 +1,174 @@
+
+<div class="d-flex justify-content-center">
+    <h2>Administracion de Vehiculos</h2>
+  </div>
+  <div class="center d-flex justify-content-center">
+    
+    <form (ngSubmit)="onSubmit()"  >
+
+      <div class="inputbox2">
+        
+        <span>Tipo Vehiculo:</span>
+        <br/>
+                  <select class="dropdown" name="miselect" [(ngModel)]="vehiculo.tipoVehiculo" [compareWith]="compareByID">
+                    <option *ngFor="let tipo of tipoVehiculos"  [ngValue]="tipo">{{tipo.descripcion}}
+                    </option>
+         
+                    </select>
+                    
+      </div>
+  
+      <div class="inputbox2">
+        
+        <input type="text" 
+                  id="placa" required [(ngModel)]="vehiculo.placa" name="placa">
+                  <span>Placa:</span>
+      </div>
+  
+      <div class="inputbox2" > 
+        
+        
+        <input  type="text" readonly style="width: 80%;"
+                  id="propietario" required [(ngModel)]="vehiculo.propietario.nombre" name="propietario">
+                  <span>Propietario:</span>
+                  <button style="width: 50px; margin: 0%;background-color: white; float: right;" type="button"
+                   class="btnIcon" data-toggle="modal" (click)="setPropietarioDetails()" data-target="#buscarPropietario-modal">
+                    <img src="assets/images/buscar.png"  class="imgIcon"  />
+                  </button>
+      </div>
+
+      <button  type="submit" class="btn btn-success">Guardar</button>       
+      <button  style="float: right;" type="submit" class="btn btn-success" (click)="clear()" data-dismiss="modal">Cancelar</button>
+
+    </form>
+  </div>
+  
+  
+  <div *ngIf="vehiculos.length">
+    <h3>Vehiculos</h3>
+    <br>
+    <table class="table table-hover table-sm">
+        <thead class="thead-dark">
+          <tr>
+            <th>Tipo Vehiculo</th>
+            <th>Placa</th>
+            <th>Propietario</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let vehi of vehiculos">
+              <td>{{vehi.tipoVehiculo.descripcion}}</td>
+              <td>{{vehi.placa}}</td>
+              <td>{{vehi.propietario.nombre}}</td>
+              <td>
+                <button type="button" class="btnIcon"  (click)="setVehiculoDetails(vehi)">
+                  <img src="assets/images/editar.png"  class="imgIcon"  />
+                </button>
+                <button type="button" class="btnIcon"data-toggle="modal" data-target="#delete-modal"
+                 (click)=prepareDeleteVehiculo(vehi) >
+                <img src="assets/images/eliminar.png"  class="imgIcon"  />
+                </button>
+              </td>
+            </tr>
+        </tbody>
+    </table>
+  </div>
+  <!-- The Modal eliminar -->
+  <div class="modal fade" id="delete-modal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Delete!</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      
+      <!-- Modal body -->
+      <div class="modal-body">
+          <div *ngIf="deletedVehiculo">
+            <p [hidden] = "returnedMessage">
+              Esta seguro de eliminar el vehiculo
+            </p>
+            <p [hidden] = "!returnedMessage">
+              {{returnedMessage}}
+            </p>
+          </div>
+      </div>
+      
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button [hidden] = "returnedMessage" type="button" class="btn btn-danger" (click)="deleteVehiculo()">Eliminar</button>
+      </div>				
+      </div>
+    </div>
+    </div>
+
+
+    <!-- The Modal buscar Propietario -->
+  <div class="modal fade" id="buscarPropietario-modal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Buscar propietario</h4>
+        <button type="button" #closeBtn class="close" data-dismiss="modal">&times;</button>
+      </div>
+      
+      <!-- Modal body -->
+      <div class="modal-body">
+          <div *ngIf="popupPropietario">
+            <div class="inputbox">
+      
+              <input type="text" 
+                        id="numeroDocumento" required [(ngModel)]="numDocPropietario" name="numeroDocumento">
+                        <span>Numero Documento:</span>
+            </div>
+            <button type="button" class="btn btn-primary" (click)="retrievePropietariosByNumeroDocumento()">
+              buscar propietario
+            </button>
+            <div *ngIf="popupListaPropietarios.length">
+              <h3>Propietarios</h3>
+              <br>
+              <table class="table table-hover table-sm">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th>Tipo Documento</th>
+                      <th>Numero Documento</th>
+                      <th>Nombre</th>
+                      <th>Telefono</th>
+                      <th>Opciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      <tr *ngFor="let propie of popupListaPropietarios">
+                        <td>{{propie.tipoDocumento.descripcion}}</td>
+                        <td>{{propie.numeroDocumento}}</td>
+                        <td>{{propie.nombre}}</td>
+                        <td>{{propie.telefono}}</td>
+                        <td>
+                          <button data-dismiss="modal" type="button" class="btn btn-primary"  (click)="setPropietarioVehiculo(propie)" >
+                            seleccionar
+                          </button>
+                         
+                        </td>
+                      </tr>
+                  </tbody>
+              </table>
+            </div>
+          </div>
+      </div>
+      
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        
+      </div>				
+      </div>
+    </div>
+    </div>
+  <app-message></app-message>
+  

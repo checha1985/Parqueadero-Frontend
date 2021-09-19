@@ -1,0 +1,207 @@
+<div class="d-flex justify-content-center">
+  <h2>Administracion de Parqueos</h2>
+</div>
+<div class="center d-flex justify-content-center">
+
+  <form  id="formulario" (ngSubmit)="onSubmit()">
+
+    <div class="inputbox2">
+
+
+      <input type="text" readonly style="width: 80%;" id="vehiculo" required [(ngModel)]="parqueo.vehiculo.placa"
+        name="vehiculo">
+      <span>Vehiculo:</span>
+      <button style="width: 50px; margin: 0%;background-color: white; float: right;" type="button" class="btnIcon"
+        data-toggle="modal" (click)="setVehiculoDetails()" data-target="#buscarVehiculo-modal">
+        <img src="assets/images/buscar.png" class="imgIcon" />
+      </button>
+    </div>
+
+    <div class="inputbox2">
+
+      <input type="text" id="numeroDocumento" required [(ngModel)]="parqueo.observacion" name="observacion">
+      <span>Observacion:</span>
+    </div>
+
+
+    <div class="inputbox2">
+
+
+      <input type="date" id="fechaIngreso" required [(ngModel)]="parqueo.fechaIngreso" [value]="parqueo.fechaIngreso"
+        name="fechaIngreso">
+      <span>Fecha Ingreso:</span>
+    </div>
+
+    <!--      
+       <div class="inputbox2">   
+        <input (focusout)="focusOutFunction($event)" type="text" 
+                id="usuarioIngreso" required [(ngModel)]="parqueo.usuarioRegistraIngreso.usuario" name="usuarioIngreso">
+                <span>Usuario Ingreso:</span> 
+        </div>
+              -->
+    <div class="inputbox2">
+
+      <input [(ngModel)]="usuario1" name="usuario1" (focusout)="focusOutFunction($event)" type="text" id="usuarioIngreso" required>
+      <span>Usuario Ingreso:</span>
+    </div>
+
+    <div class="inputbox2">
+
+      <input type="date" id="fechaSalida" required [(ngModel)]="parqueo.fechaSalida" name="fechaSalida">
+      <span>Fecha Salida:</span>
+    </div>
+
+    <!-- <div class="inputbox2">
+
+      <input (focusout)="focusOutFunction2($event)" type="text" id="usuarioSalida" required
+        [(ngModel)]="parqueo.usuarioRegistraSalida!.usuario" name="usuarioSalida">
+      <span>Usuario Salida:</span>
+    </div> -->
+
+    <div class="inputbox2">
+
+      <input [(ngModel)]="usuario2" name="usuario2" (focusout)="focusOutFunction2($event)" type="text" id="usuarioSalida" required>
+      <span>Usuario Salida:</span>
+    </div>
+
+    <button type="submit" class="btn btn-success" >Guardar</button>
+    <button style="float: right;" type="submit" class="btn btn-success" onClick="limpiar()" (click)="clear()"
+      data-dismiss="modal">Cancelar</button>
+
+  </form>
+</div>
+
+
+<div *ngIf="parqueos.length">
+  <h3>Parqueos</h3>
+  <br>
+  <table class="table table-hover table-sm">
+    <thead class="thead-dark">
+      <tr>
+        <th>Vehiculo</th>
+        <th>Observacion</th>
+        <th>Fecha Ingreso</th>
+        <th>Usuario Ingreso</th>
+        <th>Fecha Salida</th>
+        <th>Usuario Salida</th>
+        <th>Opciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let parq of parqueos">
+        <td>{{parq.vehiculo.placa}}</td>
+        <td>{{parq.observacion}}</td>
+        <td>{{parq.fechaIngreso}}</td>
+        <td>{{parq.usuarioRegistraIngreso.usuario}}</td>
+        <td>{{parq.fechaSalida}}</td>
+        <td>{{parq.usuarioRegistraSalida? parq.usuarioRegistraSalida.usuario : '*(Pendiente)*' }}</td>
+        <td>
+          <button type="button" class="btnIcon" (click)="setParqueoDetails(parq)">
+            <img src="assets/images/editar.png" class="imgIcon" />
+          </button>
+          <button type="button" class="btnIcon" data-toggle="modal" data-target="#delete-modal"
+            (click)=prepareDeleteParqueo(parq)>
+            <img src="assets/images/eliminar.png" class="imgIcon" />
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<!-- The Modal -->
+<div class="modal fade" id="delete-modal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Delete!</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div *ngIf="deletedParqueo">
+          <p [hidden]="returnedMessage">
+            Esta seguro de eliminar el Parqueo
+          </p>
+          <p [hidden]="!returnedMessage">
+            {{returnedMessage}}
+          </p>
+        </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button [hidden]="returnedMessage" type="button" class="btn btn-danger"
+          (click)="deleteParqueo()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- The Modal buscar Propietario -->
+<div class="modal fade" id="buscarVehiculo-modal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Buscar vehiculo</h4>
+        <button type="button" #closeBtn class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div *ngIf="popupVehiculo">
+          <div class="inputbox">
+
+            <input type="text" id="placaVehiculo" required [(ngModel)]="placaVehiculo" name="placaVehiculo">
+            <span>Placa Vehiculo:</span>
+          </div>
+          <button type="button" class="btn btn-primary" (click)="retrieveVehiculosByPlacaVehiculo()">
+            buscar vehiculo
+          </button>
+          <div *ngIf="popupListaVehiculos.length">
+            <h3>Vehiculos</h3>
+            <br>
+            <table class="table table-hover table-sm">
+              <thead class="thead-dark">
+                <tr>
+                  <th>Tipo Vehiculo</th>
+                  <th>Placa</th>
+                  <th>Propietario</th>
+                  <th>Opciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let vehi of popupListaVehiculos">
+                  <td>{{vehi.tipoVehiculo.descripcion}}</td>
+                  <td>{{vehi.placa}}</td>
+                  <td>{{vehi.propietario.nombre}}</td>
+                  <td>
+                    <button data-dismiss="modal" type="button" class="btn btn-primary" (click)="setVehiculo(vehi)">
+                      seleccionar
+                    </button>
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+<app-message></app-message>

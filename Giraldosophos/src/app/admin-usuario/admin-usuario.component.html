@@ -1,0 +1,115 @@
+
+<div class="d-flex justify-content-center">
+    <h2>Administracion de Usuarios</h2>
+  </div>
+  <div class="center d-flex justify-content-center">
+    
+    <form (ngSubmit)="onSubmit()" name="formUsuario" > 
+      <div class="inputbox2">
+        
+        <span>Tipo Usuario:</span>
+        <br/>
+            <select class="dropdown" name="miselect" [(ngModel)]="usuario.tipoUsuario" [compareWith]="compareByID" >
+              <option *ngFor="let tipo of tipoUsuarios"  [ngValue]="tipo">{{tipo.descripcion}}
+            </option>
+                      
+          </select>
+                    
+      </div>
+  
+      <div class="inputbox2">
+        
+        <input type="number" min="0" max="1"
+                  id="estadoUsuario" required [(ngModel)]="usuario.activo" name="estadoUsuario">
+                  <span>Estado Usuario:1 Activo, 0 Inactivo</span>
+      </div>
+  
+      <div class="inputbox2">
+        
+        <input type="text" 
+                  id="usuario" required [(ngModel)]="usuario.usuario" name="usuario">
+                  <span>Usuario:</span>
+      </div>
+  
+      <div class="inputbox2">
+        
+        <input type="password" 
+                  id="password" required [(ngModel)]="usuario.password" name="password">
+                  <span>Password:</span>
+      </div>
+      
+    
+   
+      <button type="submit" class="btn btn-success"   >Guardar</button>
+      <button  style="float: right;" type="submit" class="btn btn-success" (click)="clear()" data-dismiss="modal">Cancelar</button>
+
+    </form>
+  </div>
+  
+  
+  <div *ngIf="usuarios.length">
+    <h3>Usuarios</h3>
+    <br>
+    <table class="table table-hover table-sm">
+        <thead class="thead-dark">
+          <tr>
+            <th>Usuarios</th>
+            <th>Tipo usuario</th>
+            <th>Password</th>
+            <th>Estado</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let usu of usuarios">
+              <td>{{usu.usuario}}</td>
+              <td>{{usu.tipoUsuario.descripcion}}</td>
+              <td>{{usu.password}}</td>
+              <td>{{usu.activo== 1? 'Activo' : 'Inactivo'}}</td>
+              <td>
+                <button type="button" class="btnIcon"  (click)="setUsuarioDetails(usu)">
+                  <img src="assets/images/editar.png"  class="imgIcon"  />
+                </button>
+                <button type="button" class="btnIcon"
+                  data-toggle="modal" data-target="#delete-modal" 
+                                (click)=prepareDeleteUsuario(usu) >
+                <img src="assets/images/eliminar.png"  class="imgIcon"  />
+                </button>
+              </td>
+            </tr>
+        </tbody>
+    </table>
+  </div>
+  <!-- The Modal -->
+  <div class="modal fade" id="delete-modal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Delete!</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      
+      <!-- Modal body -->
+      <div class="modal-body">
+          <div *ngIf="deletedUsuario">
+            <p [hidden] = "returnedMessage">
+              Esta seguro de eliminar el usuario
+            </p>
+            <p [hidden] = "!returnedMessage">
+              {{returnedMessage}}
+            </p>
+          </div>
+      </div>
+      
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button [hidden] = "returnedMessage" type="button" class="btn btn-danger" (click)="deleteUsuario()">Eliminar</button>
+      </div>				
+      </div>
+    </div>
+    </div>
+  <app-message></app-message>
+  

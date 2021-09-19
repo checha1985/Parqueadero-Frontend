@@ -1,0 +1,111 @@
+
+<div class="d-flex justify-content-center">
+  <h2>Administracion de Propietarios</h2>
+</div>
+<div class="center d-flex justify-content-center">
+  
+  <form (ngSubmit)="onSubmit()"  > 
+    <div class="inputbox2">
+      
+      <span>Tipo Documento:</span>
+      <br/>
+                <select class="dropdown" name="miselect" [(ngModel)]="propietario.tipoDocumento" [compareWith]="compareByID" >
+                  <option *ngFor="let tipo of tipoDocumentos"  [ngValue]="tipo">{{tipo.descripcion}}
+                  </option>
+       
+                  </select>
+                  
+    </div>
+
+    <div class="inputbox2">
+      
+      <input type="text" 
+                id="numeroDocumento" required [(ngModel)]="propietario.numeroDocumento" name="numeroDocumento">
+                <span>Numero Documento:</span>
+    </div>
+
+    <div class="inputbox2">
+      
+      <input type="text" 
+                id="nombre" required [(ngModel)]="propietario.nombre" name="nombre">
+                <span>Nombre:</span>
+    </div>
+
+    <div class="inputbox2">
+      
+      <input type="text" 
+                id="telefono" required [(ngModel)]="propietario.telefono" name="telefono">
+                <span>Telefono:</span>
+    </div>
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <button  style="float: right;" type="submit" class="btn btn-success" (click)="clear()" data-dismiss="modal">Cancelar</button>
+
+  </form>
+</div>
+
+
+<div *ngIf="propietarios.length">
+  <h3>Propietarios</h3>
+  <br>
+  <table class="table table-hover table-sm">
+      <thead class="thead-dark">
+        <tr>
+          <th>Tipo Documento</th>
+          <th>Numero Documento</th>
+          <th>Nombre</th>
+          <th>Telefono</th>
+          <th>Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let propie of propietarios">
+            <td>{{propie.tipoDocumento.descripcion}}</td>
+            <td>{{propie.numeroDocumento}}</td>
+            <td>{{propie.nombre}}</td>
+            <td>{{propie.telefono}}</td>
+            <td>
+              <button type="button" class="btnIcon"  (click)="setPropietarioDetails(propie)">
+                <img src="assets/images/editar.png"  class="imgIcon"  />
+              </button>
+              <button type="button" class="btnIcon"
+                data-toggle="modal" data-target="#delete-modal" 
+                              (click)=prepareDeletePropietario(propie) >
+              <img src="assets/images/eliminar.png"  class="imgIcon"  />
+              </button>
+            </td>
+          </tr>
+      </tbody>
+  </table>
+</div>
+<!-- The Modal -->
+<div class="modal fade" id="delete-modal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+    
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h4 class="modal-title">Delete!</h4>
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+    </div>
+    
+    <!-- Modal body -->
+    <div class="modal-body">
+        <div *ngIf="deletedPropietario">
+          <p [hidden] = "returnedMessage">
+            Esta seguro de eliminar el propietario
+          </p>
+          <p [hidden] = "!returnedMessage">
+            {{returnedMessage}}
+          </p>
+        </div>
+    </div>
+    
+    <!-- Modal footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal" >Cancelar</button>
+      <button [hidden] = "returnedMessage" type="button" class="btn btn-danger" (click)="deletePropietario()">Eliminar</button>
+    </div>				
+    </div>
+  </div>
+  </div>
+<app-message></app-message>

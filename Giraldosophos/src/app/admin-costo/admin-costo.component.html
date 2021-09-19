@@ -1,0 +1,113 @@
+
+<div class="d-flex justify-content-center">
+    <h2>Administracion de Costos</h2>
+  </div>
+  <div class="center d-flex justify-content-center">
+    <!--aca se inicia el form-->
+    <form (ngSubmit)="onSubmit()"  > 
+      <div class="inputbox2">
+        
+        <span>Tipo Vehiculo:</span>
+        <br/>
+            <select class="dropdown" name="miselect" [(ngModel)]="costo.tipoVehiculo" [compareWith]="compareByID">
+              <option *ngFor="let tipo of tipoVehiculos"  [ngValue]="tipo">{{tipo.descripcion}}
+            </option>
+                      
+          </select>
+                    
+      </div>
+  
+      <div class="inputbox2">
+        
+        <span>Tipo Tiempo:</span>
+        <br/>
+            <select class="dropdown" name="miselect2" [(ngModel)]="costo.tipoTiempo" [compareWith]="compareByID2">
+              <option *ngFor="let tipo2 of tipoTiempos"  [ngValue]="tipo2">{{tipo2.descripcion}}
+            </option>
+                      
+          </select>
+                    
+      </div>
+  
+      <div class="inputbox2">
+        
+        <input type="text" 
+                  id="valor" required [(ngModel)]="costo.valor" name="valor">
+                  <span>Valor:</span>
+      </div>
+ 
+      <button type="submit" class="btn btn-success">Guardar</button>
+      <button  style="float: right;" type="submit" class="btn btn-success"   (click)="clear()"  data-dismiss="modal">Cancelar</button>
+
+    </form>
+  </div>
+  
+
+  <!--TENGO DUDA EN CUANTO ESTE COSTO.LENGTH-->
+  <div *ngIf="costos.length">
+    <h3>Costos</h3>
+    <br>
+    <table class="table table-hover table-sm">
+        <thead class="thead-dark">
+          <tr>
+            <th>id</th>
+            <th>Tipo Vehiculo</th>
+            <th>Tipo Tiempo</th>
+            <th>Valor</th>           
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let cost of costos">
+              <td>{{cost.id}}</td>
+              <td>{{cost.tipoVehiculo.descripcion}}</td>
+              <td>{{cost.tipoTiempo.descripcion}}</td>
+              <td>{{cost.valor}}</td>              
+              <td>
+                <button type="button" class="btnIcon"  (click)="setCostoDetails(cost)">
+                  <img src="assets/images/editar.png"  class="imgIcon"  />
+                </button>
+                <button type="button" class="btnIcon"
+                  data-toggle="modal" data-target="#delete-modal" 
+                                (click)=prepareDeleteCosto(cost) >
+                <img src="assets/images/eliminar.png"  class="imgIcon"  />
+                </button>
+              </td>
+            </tr>
+        </tbody>
+    </table>
+  </div>
+  <!-- The Modal -->
+  <div class="modal fade" id="delete-modal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Delete!</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      
+      <!-- Modal body -->
+      <div class="modal-body">
+          <div *ngIf="deletedCosto">
+            <p [hidden] = "returnedMessage">
+              Esta seguro de eliminar el costo
+            </p>
+            <p [hidden] = "!returnedMessage">
+              {{returnedMessage}}
+            </p>
+          </div>
+      </div>
+      
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button [hidden] = "returnedMessage" type="button" class="btn btn-danger" (click)="deleteCosto()">Eliminar</button>
+      </div>				
+      </div>
+    </div>
+    </div>
+  <app-message></app-message>
+  
+
